@@ -13,6 +13,11 @@ export class AuthController {
     console.log(data);
   }
 
+  @EventPattern('hello2')
+  async hello2(data: string) {
+    console.log(data);
+  }
+
   @Post()
   register(@Body() registerAuthDto: RegisterAuthDto) {
     return this.authService.register(registerAuthDto);
