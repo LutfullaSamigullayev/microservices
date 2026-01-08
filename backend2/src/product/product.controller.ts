@@ -1,11 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService,
+    @Inject('PRODUCT_SERVICE') private readonly client: ClientProxy
+  ) {}
 
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
@@ -13,7 +16,8 @@ export class ProductController {
   }
 
   @Get()
-  findAll() {
+  async findAll() {
+    await this.client.emit('hello', 'Hello from Product Service (backend2)');
     return this.productService.findAll();
   }
 
